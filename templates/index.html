@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real Estate Predictor</title>
+
+<script>
+function showForm(type){
+
+    document.getElementById("maison_form").style.display = "none";
+    document.getElementById("appart_form").style.display = "none";
+
+    if(type === "maison"){
+        document.getElementById("maison_form").style.display = "block";
+    }
+
+    if(type === "appartement"){
+        document.getElementById("appart_form").style.display = "block";
+    }
+}
+</script>
+
+</head>
+
+<body>
+
+<h1>Real Estate Price Predictor</h1>
+
+<button onclick="showForm('maison')">Maison</button>
+<button onclick="showForm('appartement')">Appartement</button>
+
+<hr>
+
+<!-- MAISON FORM -->
+
+<div id="maison_form" style="display:none">
+
+<h2>Maison</h2>
+
+<form method="POST">
+
+<input type="hidden" name="form_type" value="maison">
+
+Longitude:<br>
+<input type="text" name="longitude"><br><br>
+
+Latitude:<br>
+<input type="text" name="latitude"><br><br>
+
+Code Postal:<br>
+<input type="text" name="code_postal"><br><br>
+
+Surface Bâti:<br>
+<input type="text" name="surface_reelle_bati"><br><br>
+
+Nombre Pièces:<br>
+<input type="text" name="nombre_pieces_principales"><br><br>
+
+Prix m² Ref:<br>
+<input type="text" name="prix_m2_ref"><br><br>
+
+Surface Terrain:<br>
+<input type="text" name="surface_terrain"><br><br>
+
+Number of Lots:<br>
+<input type="text" name="number_of_lots"><br><br>
+
+<input type="submit" value="Predict Maison Price">
+
+</form>
+
+</div>
+
+
+<!-- APPARTEMENT FORM -->
+
+<div id="appart_form" style="display:none">
+
+<h2>Appartement</h2>
+
+<form method="POST">
+
+<input type="hidden" name="form_type" value="appartement">
+
+Longitude:<br>
+<input type="text" name="longitude"><br><br>
+
+Latitude:<br>
+<input type="text" name="latitude"><br><br>
+
+Code Postal:<br>
+<input type="text" name="code_postal"><br><br>
+
+Surface Bâti:<br>
+<input type="text" name="surface_reelle_bati"><br><br>
+
+Nombre Pièces:<br>
+<input type="text" name="nombre_pieces_principales"><br><br>
+
+Prix m² Ref:<br>
+<input type="text" name="prix_m2_ref"><br><br>
+
+Total Carrez Surface:<br>
+<input type="text" name="total_carrez_surface"><br><br>
+
+Number of Lots:<br>
+<input type="text" name="number_of_lots"><br><br>
+
+<input type="submit" value="Predict Appartement Price">
+
+</form>
+
+</div>
+
+
+{% if prediction %}
+<hr>
+<h2>Estimated Price: {{ prediction }} €</h2>
+{% endif %}
+
+</body>
+</html>
