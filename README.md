@@ -44,21 +44,11 @@ python download_data.py
 
 This script will:
 
--   Download real estate transaction datasets for the **last five
-    years**
+-   Download real estate transaction datasets for the **last five years**
 -   Store downloaded archives in:
-
-```{=html}
-<!-- -->
-```
-    tmp_downloads/
-
+  - tmp_downloads/
 -   Extract CSV files into:
-
-```{=html}
-<!-- -->
-```
-    dataset_raw/
+    - dataset_raw/
 
 ------------------------------------------------------------------------
 
