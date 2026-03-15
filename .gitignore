@@ -1,7 +1,10 @@
 # Custom
 tmp_downloads/*
 dataset_raw/*
-dataset_prepd/*
+datasets_prepd/*
+data_maison/*
+data_apt/*
+models/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
