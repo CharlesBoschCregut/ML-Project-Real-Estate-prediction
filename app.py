@@ -8,64 +8,47 @@ app = Flask(__name__)
 maison_model = joblib.load("models/maison_random_forest_model.pkl")
 appart_model = joblib.load("models/apt_random_forest_model.pkl")
 
+# Get feature names
+features_maison = list(maison_model.feature_names_in_)
+features_appart = list(appart_model.feature_names_in_)
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
 
     prediction = None
     form_type = None
+    feature_list = []
 
     if request.method == "POST":
 
         form_type = request.form.get("form_type")
 
-        longitude = float(request.form["longitude"])
-        latitude = float(request.form["latitude"])
-        code_postal = float(request.form["code_postal"])
-        surface_reelle_bati = float(request.form["surface_reelle_bati"])
-        nombre_pieces_principales = float(request.form["nombre_pieces_principales"])
-        prix_m2_ref = float(request.form["prix_m2_ref"])
-        number_of_lots = float(request.form["number_of_lots"])
-
         if form_type == "maison":
-
-            surface_terrain = float(request.form["surface_terrain"])
-
-            features = np.array([[
-
-                longitude,
-                latitude,
-                code_postal,
-                surface_reelle_bati,
-                nombre_pieces_principales,
-                prix_m2_ref,
-                surface_terrain,
-                number_of_lots
-
-            ]])
-
-            prediction = maison_model.predict(features)[0]
-
+            model = maison_model
+            feature_list = features_maison
 
         elif form_type == "appartement":
+            model = appart_model
+            feature_list = features_appart
 
-            total_carrez_surface = float(request.form["total_carrez_surface"])
+        # Build feature array dynamically
+        values = []
+        for feature in feature_list:
+            val = float(request.form.get(feature, 0))
+            values.append(val)
 
-            features = np.array([[
+        features_array = np.array([values])
 
-                longitude,
-                latitude,
-                code_postal,
-                surface_reelle_bati,
-                nombre_pieces_principales,
-                prix_m2_ref,
-                total_carrez_surface,
-                number_of_lots
+        prediction = model.predict(features_array)[0]
 
-            ]])
-
-            prediction = appart_model.predict(features)[0]
-
-    return render_template("index.html", prediction=prediction, form_type=form_type)
+    return render_template(
+        "index.html",
+        prediction=prediction,
+        form_type=form_type,
+        features_maison=features_maison,
+        features_appart=features_appart
+    )
 
 
 if __name__ == "__main__":
