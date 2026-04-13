@@ -119,6 +119,8 @@ color:#1f3c88;
 </style>
 
 <script>
+
+// Toggle forms
 function showForm(type){
 
 document.getElementById("maison_form").style.display = "none";
@@ -133,6 +135,49 @@ document.getElementById("appart_form").style.display = "block";
 }
 
 }
+
+// Geocode address → lat/lon + display result
+async function geocodeAddress() {
+
+    const address = document.getElementById("address").value;
+    const resultDiv = document.getElementById("geo_result");
+
+    if (!address) {
+        alert("Please enter an address");
+        return;
+    }
+
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address + ", France")}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.length === 0) {
+            resultDiv.innerHTML = "❌ Address not found";
+            return;
+        }
+
+        const lat = data[0].lat;
+        const lon = data[0].lon;
+
+        // Fill hidden inputs in both forms
+        document.querySelectorAll("input[name='latitude']").forEach(el => el.value = lat);
+        document.querySelectorAll("input[name='longitude']").forEach(el => el.value = lon);
+
+        // Display result under address bar
+        resultDiv.innerHTML = `
+            ✅ Found location:<br>
+            Latitude: <b>${lat}</b><br>
+            Longitude: <b>${lon}</b>
+        `;
+
+    } catch (error) {
+        console.error(error);
+        resultDiv.innerHTML = "❌ Error fetching location";
+    }
+}
+
 </script>
 
 </head>
@@ -146,6 +191,30 @@ Real Estate AI Price Predictor
 
 
 <div class="container">
+
+<!-- ADDRESS SEARCH -->
+
+<div class="card">
+
+<h3>Search Address</h3>
+
+<div style="display:flex; gap:10px;">
+
+<input type="text" id="address" placeholder="Enter address in France" style="flex:1; padding:10px; border-radius:6px; border:1px solid #ccc;">
+
+<button onclick="geocodeAddress()" style="padding:10px 20px; border:none; background:#1f3c88; color:white; border-radius:6px; cursor:pointer;">
+Search
+</button>
+
+</div>
+
+<!-- RESULT DISPLAY -->
+<div id="geo_result" style="margin-top:10px; font-size:14px; color:#1f3c88;"></div>
+
+</div>
+
+
+<!-- SELECTOR -->
 
 <div class="selector">
 <button onclick="showForm('maison')">Maison</button>
@@ -163,45 +232,21 @@ Real Estate AI Price Predictor
 
 <input type="hidden" name="form_type" value="maison">
 
-<div>
-<label>Longitude</label>
-<input type="text" name="longitude">
-</div>
+{% for feature in features_maison %}
 
 <div>
-<label>Latitude</label>
-<input type="text" name="latitude">
+
+<label>{{ feature.replace('_', ' ').title() }}</label>
+
+{% if feature in ['latitude', 'longitude'] %}
+<input type="hidden" name="{{ feature }}">
+{% else %}
+<input type="number" step="any" name="{{ feature }}" required>
+{% endif %}
+
 </div>
 
-<div>
-<label>Code Postal</label>
-<input type="text" name="code_postal">
-</div>
-
-<div>
-<label>Surface Bâti (m²)</label>
-<input type="text" name="surface_reelle_bati">
-</div>
-
-<div>
-<label>Nombre Pièces</label>
-<input type="text" name="nombre_pieces_principales">
-</div>
-
-<div>
-<label>Prix m² Référence</label>
-<input type="text" name="prix_m2_ref">
-</div>
-
-<div>
-<label>Surface Terrain</label>
-<input type="text" name="surface_terrain">
-</div>
-
-<div>
-<label>Number of Lots</label>
-<input type="text" name="number_of_lots">
-</div>
+{% endfor %}
 
 <div class="full">
 <button class="submit" type="submit">Predict Price</button>
@@ -222,45 +267,21 @@ Real Estate AI Price Predictor
 
 <input type="hidden" name="form_type" value="appartement">
 
-<div>
-<label>Longitude</label>
-<input type="text" name="longitude">
-</div>
+{% for feature in features_appart %}
 
 <div>
-<label>Latitude</label>
-<input type="text" name="latitude">
+
+<label>{{ feature.replace('_', ' ').title() }}</label>
+
+{% if feature in ['latitude', 'longitude'] %}
+<input type="hidden" name="{{ feature }}">
+{% else %}
+<input type="number" step="any" name="{{ feature }}" required>
+{% endif %}
+
 </div>
 
-<div>
-<label>Code Postal</label>
-<input type="text" name="code_postal">
-</div>
-
-<div>
-<label>Surface Bâti (m²)</label>
-<input type="text" name="surface_reelle_bati">
-</div>
-
-<div>
-<label>Nombre Pièces</label>
-<input type="text" name="nombre_pieces_principales">
-</div>
-
-<div>
-<label>Prix m² Référence</label>
-<input type="text" name="prix_m2_ref">
-</div>
-
-<div>
-<label>Total Carrez Surface</label>
-<input type="text" name="total_carrez_surface">
-</div>
-
-<div>
-<label>Number of Lots</label>
-<input type="text" name="number_of_lots">
-</div>
+{% endfor %}
 
 <div class="full">
 <button class="submit" type="submit">Predict Price</button>
