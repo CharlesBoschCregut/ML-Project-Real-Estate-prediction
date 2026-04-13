@@ -12,6 +12,9 @@ appart_model = joblib.load("models/apt_random_forest_model.pkl")
 features_maison = list(maison_model.feature_names_in_)
 features_appart = list(appart_model.feature_names_in_)
 
+# Season mapping for reference
+SEASON_MAPPING = {"winter": 0, "spring": 1, "summer": 2, "autumn": 3}
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
